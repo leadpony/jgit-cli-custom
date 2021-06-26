@@ -19,8 +19,16 @@ if ($null -ne $env:JAVA_HOME) {
 $javaArgs = @('-jar', "$baseDir\jgit-cli-${jgit.version}.jar") + $args
 $javaArgs = $javaArgs | ForEach-Object { """$_""" } 
 
-if ($usePager) {
-    & $java $javaArgs | Out-Host -Paging
-} else {
-    & $java $javaArgs
+$encoding = [Console]::OutputEncoding
+try {
+    [Console]::OutputEncoding = [Text.Encoding]::UTF8
+    if ($usePager) {
+        & $java $javaArgs | Out-Host -Paging
+    } else {
+        & $java $javaArgs
+    }
+} catch [System.Management.Automation.HaltCommandException] {
+    Write-Host $_
+} finally {
+    [Console]::OutputEncoding = $encoding
 }
