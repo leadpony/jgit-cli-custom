@@ -22,6 +22,7 @@ $javaArgs = $javaArgs | ForEach-Object { """$_""" }
 $encoding = [Console]::OutputEncoding
 try {
     [Console]::OutputEncoding = [Text.Encoding]::UTF8
+    $Host.UI.RawUI.FlushInputBuffer()
     if ($usePager) {
         & $java $javaArgs | Out-Host -Paging
     } else {
